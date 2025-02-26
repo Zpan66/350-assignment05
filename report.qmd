@@ -1,0 +1,96 @@
+---
+title: "World Development Indicators Analysis"
+author: "Your Name"
+date: "2025-02-25"
+output:
+  html: default
+  pdf: default
+---
+
+
+
+```{python}
+import pandas as pd
+
+df = pd.read_csv("wdi.csv")
+
+df.head()
+```
+
+```{python}
+indicators = ["gdp_per_capita", "total_population", "life_expectancy"]
+
+summary = df[indicators].describe()
+
+summary
+```
+
+## Exploratory Data Analysis
+This dataset contains various world development indicators. We focus on GDP per capita, total population, and life expectancy.
+
+```{python}
+import os
+
+os.makedirs("figures", exist_ok=True)
+os.makedirs("tables", exist_ok=True)
+```
+
+```{python}
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+plt.figure(figsize=(8, 5))
+sns.scatterplot(x=df["gdp_per_capita"], y=df["life_expectancy"])
+plt.title("GDP per Capita vs Life Expectancy")
+plt.xlabel("GDP per Capita (USD)")
+plt.ylabel("Life Expectancy (Years)")
+
+plt.savefig("figures/gdp_life_expectancy.png", dpi=300, bbox_inches="tight")
+plt.show()
+```
+
+```{python}
+top_10 = df.nlargest(10, "total_population")
+
+plt.figure(figsize=(10, 5))
+sns.barplot(x=top_10["country"], y=top_10["total_population"])
+plt.xticks(rotation=45)
+plt.title("Top 10 Countries by Population")
+plt.xlabel("Country")
+plt.ylabel("Total Population")
+
+plt.savefig("figures/top_10_population.png", dpi=300, bbox_inches="tight")
+plt.show()
+```
+
+```{python}
+summary_table = df[indicators].describe().T
+summary_table.to_csv("tables/summary_table.csv")
+
+summary_table
+```
+
+Refer to Figure @fig-gdp-life-exp for the relationship between GDP per capita and Life Expectancy.
+Refer to Table @tbl-summary for key statistical insights.
+
+# GDP and Life Expectancy
+![GDP vs Life Expectancy](figures/gdp_life_expectancy.png){#fig-gdp-life-exp}
+
+# Summary Statistics
+```{python}
+import pandas as pd
+summary_table = pd.read_csv("tables/summary_table.csv", index_col=0)
+summary_table
+```
+
+---
+
+## **🔹 Step 7: Add a Bibliography**
+### **7.1 Create `references.bib`**
+
+### **7.2 Include the Bibliography in `report.qmd`**
+```yaml
+---
+bibliography: references.bib
+---
+This analysis is based on data from @worldbank2024.
